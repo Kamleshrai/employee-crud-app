@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="empApp">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Manager</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+</head>
+<body ng-controller="EmpController">
+  <h2>Employee Manager</h2>
+  <form ng-submit="addEmployee()">
+    <input type="text" ng-model="emp.empId" placeholder="Emp. ID" required>
+    <input type="text" ng-model="emp.name" placeholder="Name" required>
+    <input type="date" ng-model="emp.dob" placeholder="DOB" required>
+    <input type="text" ng-model="emp.designation" placeholder="Designation" required>
+    <input type="text" ng-model="emp.contact" placeholder="Contact" required>
+    <button type="submit">Add Employee</button>
+  </form>
+
+
+  <ul>
+    <li ng-repeat="e in employees">
+      {{e.empId}} - {{e.name}} - {{e.dob}} - {{e.designation}} - {{e.contact}}
+    </li>
+  </ul>
+
+
+  <script>
+    const app = angular.module('empApp', []);
+
+
+    app.controller('EmpController', function($scope, $http) {
+      $scope.employees = [];
+
+
+      $scope.getEmployees = function() {
+        $http.get('http://localhost:3000/api/employees').then(function(response) {
+          $scope.employees = response.data;
+        });
+      }
+
+
+      $scope.addEmployee = function() {
+        $http.post('http://localhost:3000/api/employees', $scope.emp).then(function(response) {
+          $scope.emp = {};
+          $scope.getEmployees();
+        });
+      }
+
+
+      $scope.getEmployees();
+    });
+  </script>
+</body>
+</html>
+
